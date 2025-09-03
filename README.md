@@ -1,15 +1,18 @@
-# Kultasieni deep learning model
-![image of boletus edulis](https://github.com/timonenv/kultasieni/blob/main/images/image1.jpg)
+# Kultasieni deep learning model :mushroom::fallen_leaf:
+![Boletus edulis picked in Helsinki, 08/2025](https://github.com/timonenv/kultasieni/blob/main/images/image1.jpg)
 
 Binary mushroom classifier (poisonous/edible).
 Just for fun - always identify any mushroom 100% yourself before eating!
 
 ### Website / API 
-:construction_worker: Under construction! :construction_worker:
 Model available in: [timonenv.github.io/kultasieni/](https://timonenv.github.io/kultasieni/)
 
-### Mushroom Data Features
+### Details 
+Labels are very precise: the prediction will fail if they are not in the table below.
+Current model: sklearn RandomForest. Lighter to host online.
+Previous model: Tensorflow Sequential, this one is too heavy to host online. Flagged with USE_KERAS_MODEL = False in model.py.
 
+### Mushroom Data Features
 Data from: [kaggle.com/datasets/dhinaharp/mushroom-dataset/data](https://www.kaggle.com/datasets/dhinaharp/mushroom-dataset/data)
 
 This table outlines the features used for the model and what can be input for prediction (n: nominal, m: metrical).
