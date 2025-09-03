@@ -5,7 +5,7 @@ Binary mushroom classifier (poisonous/edible).
 Just for fun - always identify any mushroom 100% yourself before eating!
 
 ### Website / API 
-API hosted at: [timonenv.github.io/kultasieni/](timonenv.github.io/kultasieni/)
+Model available in: [timonenv.github.io/kultasieni/](timonenv.github.io/kultasieni/)
 
 ### Mushroom Data Features
 
