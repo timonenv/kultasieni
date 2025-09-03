@@ -5,7 +5,7 @@ Code for API to run the model. Requires the trained model from model.py.
 import pandas as pd
 import joblib
 from flask import Flask, request, jsonify
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 from tensorflow import keras
 
 
@@ -26,7 +26,8 @@ except Exception as e:
 
 app = Flask(__name__)
 CORS(app) # if not working with github
-@app.route("/predict", methods=["POST"])
+@app.route("/predict", methods=["POST", "OPTIONS"])
+@cross_origin()
 
 def predict():
     """
