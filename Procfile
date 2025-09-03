@@ -1,1 +1,1 @@
-web: gunicorn kultasieni:app
+web: gunicorn api:app
