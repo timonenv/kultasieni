@@ -98,9 +98,6 @@ CORS(app) # if not working with github
 @app.route("/predict", methods=["POST", "OPTIONS"])
 @cross_origin()
 def predict():
-    """
-    #Create prediction from model: poisonous/edible.
-    """
     if request.method == "OPTIONS":
         return "", 200
 
