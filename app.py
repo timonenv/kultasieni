@@ -27,6 +27,11 @@ except Exception as e:
 app = Flask(__name__)
 CORS(app)
 
+expected_cols = ["cap-diameter", "cap-shape", "cap-surface", "cap-color", "does-bruise-or-bleed", "gill-attachment",
+                    "gill-spacing", "gill-color", "stem-height", "stem-width", "stem-root", "stem-surface", "stem-color",
+                    "veil-color", "has-ring", "ring-type", "spore-print-color", "habitat", "season"]
+
+
 @app.route("/predict", methods=["POST", "OPTIONS"])
 @cross_origin()
 def predict():
@@ -41,7 +46,7 @@ def predict():
         input_df = pd.DataFrame([data])
 
         processed_data = {}
-        for col in feature_cols:
+        for col in expected_cols:
             if col in feature_encoders:
                 encoder = feature_encoders[col]
                 processed_data[col] = encoder.transform([str(input_df.iloc[0][col])])[0]
@@ -63,10 +68,7 @@ def predict():
             "confidence": confidence
         })
     except Exception as e:
-        print("An unexpected error occurred during prediction: {}".format(e))
-        traceback.print_exc()
-        return jsonify({"error": "An unexpected error occurred: {}".format(e)}), 500
-
+        print(e)
 
 """
 # old Keras DL version, too heavy for Render
