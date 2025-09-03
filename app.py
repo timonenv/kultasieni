@@ -57,14 +57,17 @@ def predict():
         scaled_data = scaler.transform(processed_df)
         prediction = model.predict(scaled_data)
         prediction_label = target_encoder.inverse_transform(prediction)
-
+        if prediction_label[0] == "p":
+            final_label="poisonous"
+        else:
+            final_label="edible"
         try:
             confidence = model.predict_proba(scaled_data)[0][prediction[0]]
         except AttributeError:
             confidence = 1.0 # Default confidence if predict_proba is not available
 
         return jsonify({
-            "prediction": prediction_label[0],
+            "prediction": final_label,
             "confidence": confidence
         })
     except Exception as e:
