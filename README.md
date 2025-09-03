@@ -1,5 +1,5 @@
 # kultasieni
-![alt text](https://github.com/timonenv/kultasieni/image1.png)
+![image of boletus edulis](https://github.com/timonenv/kultasieni/blob/main/images/image1.jpg)
 
 Binary mushroom classifier (poisonous/edible).
 Just for fun - always identify any mushroom 100% yourself before eating!
