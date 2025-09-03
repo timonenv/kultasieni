@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kultasieni</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+
+    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-2xl">
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">Kultasieni Predictor</h1>
+        <p class="text-center text-gray-600 mb-8">Enter the characteristics of a mushroom to predict if it is edible or poisonous.</p>
+
+        <form id="predictionForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            <!-- Numerical Inputs -->
+            <div>
+                <label for="cap-diameter" class="block text-sm font-medium text-gray-700">Cap Diameter</label>
+                <input type="number" id="cap-diameter" name="cap-diameter" step="0.01" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+            </div>
+            <div>
+                <label for="stem-height" class="block text-sm font-medium text-gray-700">Stem Height</label>
+                <input type="number" id="stem-height" name="stem-height" step="0.01" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+            </div>
+            <div>
+                <label for="stem-width" class="block text-sm font-medium text-gray-700">Stem Width</label>
+                <input type="number" id="stem-width" name="stem-width" step="0.01" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+            </div>
+
+            <!-- Categorical Inputs -->
+            <div>
+                <label for="cap-shape" class="block text-sm font-medium text-gray-700">Cap Shape</label>
+                <input type="text" id="cap-shape" name="cap-shape" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+            </div>
+            <div>
+                <label for="cap-surface" class="block text-sm font-medium text-gray-700">Cap Surface</label>
+                <input type="text" id="cap-surface" name="cap-surface" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+            </div>
+            <div>
+                <label for="cap-color" class="block text-sm font-medium text-gray-700">Cap Color</label>
+                <input type="text" id="cap-color" name="cap-color" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+            </div>
+            <div>
+                <label for="does-bruise-or-bleed" class="block text-sm font-medium text-gray-700">Does Bruise or Bleed</label>
+                <input type="text" id="does-bruise-or-bleed" name="does-bruise-or-bleed" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+            </div>
+            <div>
+                <label for="gill-attachment" class="block text-sm font-medium text-gray-700">Gill Attachment</label>
+                <input type="text" id="gill-attachment" name="gill-attachment" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+            </div>
+            <div>
+                <label for="gill-spacing" class="block text-sm font-medium text-gray-700">Gill Spacing</label>
+                <input type="text" id="gill-spacing" name="gill-spacing" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+            </div>
+            <div>
+                <label for="gill-color" class="block text-sm font-medium text-gray-700">Gill Color</label>
+                <input type="text" id="gill-color" name="gill-color" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+            </div>
+            <div>
+                <label for="stem-root" class="block text-sm font-medium text-gray-700">Stem Root</label>
+                <input type="text" id="stem-root" name="stem-root" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+            </div>
+            <div>
+                <label for="stem-surface" class="block text-sm font-medium text-gray-700">Stem Surface</label>
+                <input type="text" id="stem-surface" name="stem-surface" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+            </div>
+            <div>
+                <label for="stem-color" class="block text-sm font-medium text-gray-700">Stem Color</label>
+                <input type="text" id="stem-color" name="stem-color" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+            </div>
+            <div>
+                <label for="veil-color" class="block text-sm font-medium text-gray-700">Veil Color</label>
+                <input type="text" id="veil-color" name="veil-color" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+            </div>
+            <div>
+                <label for="has-ring" class="block text-sm font-medium text-gray-700">Has Ring</label>
+                <input type="text" id="has-ring" name="has-ring" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+            </div>
+            <div>
+                <label for="ring-type" class="block text-sm font-medium text-gray-700">Ring Type</label>
+                <input type="text" id="ring-type" name="ring-type" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+            </div>
+            <div>
+                <label for="spore-print-color" class="block text-sm font-medium text-gray-700">Spore Print Color</label>
+                <input type="text" id="spore-print-color" name="spore-print-color" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+            </div>
+            <div>
+                <label for="habitat" class="block text-sm font-medium text-gray-700">Habitat</label>
+                <input type="text" id="habitat" name="habitat" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+            </div>
+            <div>
+                <label for="season" class="block text-sm font-medium text-gray-700">Season</label>
+                <input type="text" id="season" name="season" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+            </div>
+
+            <!-- Submit Button -->
+            <div class="md:col-span-2">
+                <button type="submit" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Predict
+                </button>
+            </div>
+        </form>
+
+        <div id="result" class="mt-8 text-center text-lg font-semibold text-gray-800 hidden"></div>
+        <div id="error" class="mt-8 text-center text-lg font-semibold text-red-600 hidden"></div>
+
+    </div>
+
+    <script>
+        document.getElementById('predictionForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const form = e.target;
+            const formData = new FormData(form);
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = isNaN(value) ? value : parseFloat(value);
+            });
+
+            const resultDiv = document.getElementById('result');
+            const errorDiv = document.getElementById('error');
+            
+            resultDiv.classList.add('hidden');
+            errorDiv.classList.add('hidden');
+            resultDiv.textContent = 'Predicting...';
+            resultDiv.classList.remove('hidden');
+
+            try {
+                // IMPORTANT: Replace with API's public URL once deployed!!
+                const apiUrl = 'http://127.0.0.1:5000/predict';
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.error || 'Prediction failed');
+                }
+
+                const prediction = result.prediction;
+                const confidence = (result.confidence * 100).toFixed(2);
+
+                resultDiv.textContent = `The mushroom is predicted to be ${prediction} with ${confidence}% confidence.`;
+                resultDiv.classList.remove('hidden');
+            } catch (error) {
+                console.error('Error:', error);
+                errorDiv.textContent = `Error: ${error.message}`;
+                errorDiv.classList.remove('hidden');
+                resultDiv.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
