@@ -9,6 +9,7 @@ Model available in: [timonenv.github.io/kultasieni/](https://timonenv.github.io/
 
 ### Details 
 Labels are very precise: the prediction will fail if they are not in the table below.
+
 Current model: sklearn RandomForest. Lighter to host online.
 
 Previous model: Tensorflow Sequential, this one is too heavy to host online. Flagged with USE_KERAS_MODEL = True in model.py.
