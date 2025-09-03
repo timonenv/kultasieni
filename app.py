@@ -5,7 +5,9 @@ Code for API to run the model. Requires the trained model from model.py.
 import pandas as pd
 import joblib
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from tensorflow import keras
+
 
 MODEL_FILENAME = "kultasieni_classifier.keras"
 SCALER_FILENAME = "kultasieni_scaler.joblib"
@@ -23,6 +25,7 @@ except Exception as e:
     model = scaler = feature_encoders = target_encoder = None
 
 app = Flask(__name__)
+CORS(app) # if not working with github
 @app.route("/predict", methods=["POST"])
 
 def predict():
