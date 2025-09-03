@@ -35,9 +35,15 @@ def predict():
     if request.method == "OPTIONS":
         return "", 200
 
+    if model is None or scaler is None or feature_encoders is None or target_encoder is None:
+        return jsonify({"error": "Model, scaler, or encoder not loaded. Please train the model first."}), 500
+    
     try:    
         # request is JSON data
         data = request.get_json(force=True)
+        if not data:
+            return jsonify({"error": "No JSON data received."}), 400
+
         expected_cols = ["cap-diameter", "cap-shape", "cap-surface", "cap-color", "does-bruise-bleed", "gill-attachment",
                             "gill-spacing", "gill-color", "stem-height", "stem-width", "stem-root", "stem-surface", "stem-color",
                             "veil-color", "has-ring", "ring-type", "spore-print-color", "habitat", "season"]
@@ -45,33 +51,31 @@ def predict():
         input_df = pd.DataFrame([data])
         input_df = input_df.reindex(columns=expected_cols, fill_value=None)
         
-        categorical_cols = feature_encoders.keys()
-        encoded_features = []
+        processed_features = []
         
-        for col in categorical_cols:
-            if col in input_df.columns and pd.notna(input_df.loc[0, col]):
+        for col in expected_cols:
+            value = input_df.loc[0, col]
+            if col in ["cap-diameter", "stem-height", "stem-width"]:
                 try:
-                    encoded_value = feature_encoders[col].transform([str(input_df.loc[0, col])])
-                    encoded_features.append(encoded_value[0])
-                except ValueError as e:
-                    return jsonify({"error": "Unknown label for column '{}': {}".format(col, e)}), 400
-            else:
-                encoded_features.append(0) 
-
-        numerical_cols = ["cap-diameter", "stem-height", "stem-width"]
-        numerical_features = []
-        for col in numerical_cols:
-            if col in input_df.columns and pd.notna(input_df.loc[0, col]):
-                try:
-                    numerical_features.append(float(input_df.loc[0, col]))
+                    processed_features.append(float(value) if pd.notna(value) else 0.0)
                 except (ValueError, TypeError):
-                    numerical_features.append(0.0)
+                    processed_features.append(0.0) 
             else:
-                numerical_features.append(0.0) 
-
-        all_cols = numerical_cols + list(categorical_cols)
-        combined_df = pd.DataFrame([numerical_features + encoded_features], columns=all_cols)
+                try:
+                    encoder = feature_encoders.get(col)
+                    if encoder:
+                        encoded_value = encoder.transform([str(value)])
+                        processed_features.append(encoded_value[0])
+                    else:
+                        processed_features.append(0)
+                except ValueError as e:
+                    return jsonify({"error": f"Unknown label for column '{col}': {e}"}), 400
+                except (ValueError, TypeError):
+                    processed_features.append(0) 
         
+        combined_df = pd.DataFrame([processed_features], columns=expected_cols)
+        
+        # scale and predict
         input_scaled = scaler.transform(combined_df)
         prediction = model.predict(input_scaled)
         predicted_class = (prediction > 0.5).astype("int32")[0][0] # 0.5 threshold for positive
@@ -83,9 +87,8 @@ def predict():
         })
     
     except Exception as e:
-        print("An unexpected error occurred during prediction: {}".format(e))
+        print(e)
         return jsonify({"error": f"An unexpected error occurred: {e}"}), 500
-
 
 if __name__ == "__main__":
     app.run(debug=True)
