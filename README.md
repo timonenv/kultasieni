@@ -1,4 +1,4 @@
-# kultasieni
+# Kultasieni deep learning model
 ![image of boletus edulis](https://github.com/timonenv/kultasieni/blob/main/images/image1.jpg)
 
 Binary mushroom classifier (poisonous/edible).
