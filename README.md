@@ -1,0 +1,2 @@
+# kultasieni
+Binary mushroom classifier.
