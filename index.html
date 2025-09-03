@@ -133,8 +133,7 @@
             resultDiv.classList.remove('hidden');
 
             try {
-                // IMPORTANT: Replace with API's public URL once deployed!!
-                const apiUrl = 'http://127.0.0.1:5000/predict';
+                const apiUrl = 'https://kultasieni.onrender.com';
 
                 const response = await fetch(apiUrl, {
                     method: 'POST',
