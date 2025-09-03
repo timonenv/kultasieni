@@ -5,25 +5,31 @@ Data from: https://www.kaggle.com/datasets/dhinaharp/mushroom-dataset/data
 expected_cols = ["cap-diameter", "cap-shape", "cap-surface", "cap-color", "does-bruise-or-bleed", "gill-attachment",
                     "gill-spacing", "gill-color", "stem-height", "stem-width", "stem-root", "stem-surface", "stem-color",
                     "veil-color", "has-ring", "ring-type", "spore-print-color", "habitat", "season"]
-#large model 10 epoch:
+#large keras model 10 epoch:
 Model Accuracy: 0.99
 Model Loss: 0.0300
 
-small model 50 epoch:
-Model Accuracy: 0.9438
-Model Loss: 0.1510
+# random forest Model Accuracy: 1.00
 """
 
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder, MinMaxScaler
+from sklearn.ensemble import RandomForestClassifier
 import joblib
 import warnings
 from tensorflow import keras
+import os
+
 warnings.filterwarnings("ignore")
 
+USE_KERAS_MODEL = False
+
 KULTASIENI_DATASET_PATH = "secondary_data.csv" # from Kaggle
-MODEL_FILENAME = "kultasieni_classifier.keras"
+if USE_KERAS_MODEL:
+    MODEL_FILENAME = "kultasieni_classifier.keras"
+else:
+    MODEL_FILENAME = "kultasieni_classifier.joblib"
 SCALER_FILENAME = "kultasieni_scaler.joblib"
 FEATURE_ENCODERS_FILENAME = "kultasieni_feature_encoders.joblib"
 TARGET_ENCODER_FILENAME = "kultasieni_target_encoder.joblib"
@@ -94,23 +100,13 @@ def train_keras_model(X_train, y_train):
     y_train_encoded = target_encoder.fit_transform(y_train) # change target to binary 0 and 1
     print("Saving the target encoder to {}".format(TARGET_ENCODER_FILENAME))
     joblib.dump(target_encoder, TARGET_ENCODER_FILENAME)
-    """
+
     model = keras.Sequential([
         keras.layers.InputLayer(input_shape=(X_train.shape[1],)),
         keras.layers.Dense(64, activation="relu"),
         keras.layers.Dense(32, activation="relu"),
         keras.layers.Dense(1, activation="sigmoid")
     ])
-    """
-    # smaller model
-    model = keras.Sequential([
-        keras.layers.InputLayer(input_shape=(X_train.shape[1],)),
-        keras.layers.Dense(16, activation="relu"),
-        keras.layers.Dense(1, activation="sigmoid")
-    ])
-    model.compile(optimizer="adam",
-                  loss="binary_crossentropy",
-                  metrics=["accuracy"])
 
     model.fit(X_train, y_train_encoded, epochs=50, batch_size=32, verbose=1)
     print("Model training complete.")
@@ -127,13 +123,44 @@ def evaluate_keras_model(model, X_test, y_test):
     print(f"Model Accuracy: {accuracy:.4f}")
     print(f"Model Loss: {loss:.4f}")
 
-def save_model(model):
+def save_keras_model(model):
     """
-    Save the trained model to a file.
+    Save the trained Keras model to a file.
     """
     print("Saving the model to {}".format(MODEL_FILENAME))
     model.save(MODEL_FILENAME)
     print("Model saved successfully.")
+
+def train_scikit_model(X_train, y_train):
+    """
+    Trains the scikit-learn Naive Bayes model.
+    """
+    print("Training the scikit-learn Random Forest model...")
+    
+    target_encoder = LabelEncoder()
+    y_train_encoded = target_encoder.fit_transform(y_train)
+    print("Saving the target encoder to {}".format(TARGET_ENCODER_FILENAME))
+    joblib.dump(target_encoder, TARGET_ENCODER_FILENAME)
+
+    # Use the more powerful RandomForestClassifier
+    model = RandomForestClassifier(n_estimators=100, random_state=42)
+    model.fit(X_train, y_train_encoded)
+    
+    print("Model training complete.")
+    return model
+
+def evaluate_scikit_model(model, X_test, y_test):
+    print("Evaluating the model...")
+    target_encoder = joblib.load(TARGET_ENCODER_FILENAME)
+    y_test_encoded = target_encoder.transform(y_test)
+    accuracy = model.score(X_test, y_test_encoded)
+    print("Model Accuracy: {:.2f}".format(accuracy))
+
+def save_scikit_model(model):
+    print("Saving the scikit-learn model to {}".format(MODEL_FILENAME))
+    joblib.dump(model, MODEL_FILENAME)
+    print("Model saved successfully.")
+
 
 def main():
     df = pd.read_csv(KULTASIENI_DATASET_PATH, sep=";")
@@ -142,9 +169,16 @@ def main():
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     print("Data split: {} training, {} testing.".format(len(X_train), len(X_test)))
 
-    model = train_keras_model(X_train, y_train)
-    evaluate_keras_model(model, X_test, y_test)
-    save_model(model)
+    if USE_KERAS_MODEL:
+        print("Using DL Keras model")
+        model = train_keras_model(X_train, y_train)
+        evaluate_keras_model(model, X_test, y_test)
+        save_keras_model(model)
+    else:
+        print("Using lightweight scikit model")
+        model = train_scikit_model(X_train, y_train)
+        evaluate_scikit_model(model, X_test, y_test)
+        save_scikit_model(model)
 
 if __name__ == "__main__":
     main()

@@ -1,6 +1,75 @@
 """
 Code for API to run the model. Requires the trained model from model.py.
 """
+import pandas as pd
+import joblib
+from flask import Flask, request, jsonify
+from flask_cors import CORS, cross_origin
+import traceback
+
+# Define filenames for the saved model and preprocessing objects
+MODEL_FILENAME = "kultasieni_classifier.joblib"
+SCALER_FILENAME = "kultasieni_scaler.joblib"
+FEATURE_ENCODERS_FILENAME = "kultasieni_feature_encoders.joblib"
+TARGET_ENCODER_FILENAME = "kultasieni_target_encoder.joblib"
+COLUMNS_FILENAME = "kultasieni_feature_cols.joblib"
+
+# Load the model and preprocessing files once when the application starts
+try:
+    model = joblib.load(MODEL_FILENAME)
+    scaler = joblib.load(SCALER_FILENAME)
+    feature_encoders = joblib.load(FEATURE_ENCODERS_FILENAME)
+    target_encoder = joblib.load(TARGET_ENCODER_FILENAME)
+    feature_cols = joblib.load(COLUMNS_FILENAME)
+except Exception as e:
+    print("Error loading model or preprocessing files: {}".format(e))
+
+app = Flask(__name__)
+CORS(app)
+
+@app.route("/predict", methods=["POST", "OPTIONS"])
+@cross_origin()
+def predict():
+    """
+    Create prediction from model: poisonous/edible.
+    """
+    if request.method == "OPTIONS":
+        return "", 200
+
+    try:
+        data = request.get_json(force=True)
+        input_df = pd.DataFrame([data])
+
+        processed_data = {}
+        for col in feature_cols:
+            if col in feature_encoders:
+                encoder = feature_encoders[col]
+                processed_data[col] = encoder.transform([str(input_df.iloc[0][col])])[0]
+            else:
+                processed_data[col] = [input_df.iloc[0][col]]
+        
+        processed_df = pd.DataFrame(processed_data)
+        scaled_data = scaler.transform(processed_df)
+        prediction = model.predict(scaled_data)
+        prediction_label = target_encoder.inverse_transform(prediction)
+
+        try:
+            confidence = model.predict_proba(scaled_data)[0][prediction[0]]
+        except AttributeError:
+            confidence = 1.0 # Default confidence if predict_proba is not available
+
+        return jsonify({
+            "prediction": prediction_label[0],
+            "confidence": confidence
+        })
+    except Exception as e:
+        print("An unexpected error occurred during prediction: {}".format(e))
+        traceback.print_exc()
+        return jsonify({"error": "An unexpected error occurred: {}".format(e)}), 500
+
+
+"""
+# old Keras DL version, too heavy for Render
 
 import pandas as pd
 import joblib
@@ -30,7 +99,7 @@ CORS(app) # if not working with github
 @cross_origin()
 def predict():
     """
-    Create prediction from model: poisonous/edible.
+    #Create prediction from model: poisonous/edible.
     """
     if request.method == "OPTIONS":
         return "", 200
@@ -92,3 +161,4 @@ def predict():
 
 if __name__ == "__main__":
     app.run(debug=True)
+"""
