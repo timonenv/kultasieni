@@ -34,4 +34,3 @@ This table outlines the features used for the model and what can be input for pr
 | spore-print-color (n) | see cap-color |
 | habitat (n) | grasses=g, leaves=l, meadows=m, paths=p, heaths=h, urban=u, waste=w, woods=d |
 | season (n) | spring=s, summer=u, autumn=a, winter=w |
-```eof
