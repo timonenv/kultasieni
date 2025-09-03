@@ -44,7 +44,7 @@ def predict():
         if not data:
             return jsonify({"error": "No JSON data received."}), 400
 
-        expected_cols = ["cap-diameter", "cap-shape", "cap-surface", "cap-color", "does-bruise-bleed", "gill-attachment",
+        expected_cols = ["cap-diameter", "cap-shape", "cap-surface", "cap-color", "does-bruise-or-bleed", "gill-attachment",
                             "gill-spacing", "gill-color", "stem-height", "stem-width", "stem-root", "stem-surface", "stem-color",
                             "veil-color", "has-ring", "ring-type", "spore-print-color", "habitat", "season"]
 
