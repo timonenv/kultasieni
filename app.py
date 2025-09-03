@@ -33,7 +33,8 @@ def predict():
     """
     Create prediction from model: poisonous/edible.
     """
-
+    if request.method == "OPTIONS":
+        return "", 200
     # request is JSON data
     data = request.get_json(force=True)
 
