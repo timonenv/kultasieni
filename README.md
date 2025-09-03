@@ -5,11 +5,11 @@ Binary mushroom classifier (poisonous/edible).
 Just for fun - always identify any mushroom 100% yourself before eating!
 
 ### Website / API 
-Model available in: [timonenv.github.io/kultasieni/](timonenv.github.io/kultasieni/)
+Model available here: [Kultasieni](timonenv.github.io/kultasieni/)
 
 ### Mushroom Data Features
 
-Data from: [https://www.kaggle.com/datasets/dhinaharp/mushroom-dataset/data](https://www.kaggle.com/datasets/dhinaharp/mushroom-dataset/data)
+Data from: [dhinaharp Kaggle repository](https://www.kaggle.com/datasets/dhinaharp/mushroom-dataset/data)
 This table outlines the features used for the model and what can be input for prediction (n: nominal, m: metrical).
 
 | Feature | Values |
