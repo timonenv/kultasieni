@@ -5,9 +5,13 @@ Data from: https://www.kaggle.com/datasets/dhinaharp/mushroom-dataset/data
 expected_cols = ["cap-diameter", "cap-shape", "cap-surface", "cap-color", "does-bruise-or-bleed", "gill-attachment",
                     "gill-spacing", "gill-color", "stem-height", "stem-width", "stem-root", "stem-surface", "stem-color",
                     "veil-color", "has-ring", "ring-type", "spore-print-color", "habitat", "season"]
-
+#large model 10 epoch:
 Model Accuracy: 0.99
 Model Loss: 0.0300
+
+small model 50 epoch:
+Model Accuracy: 0.9438
+Model Loss: 0.1510
 """
 
 import pandas as pd
@@ -90,19 +94,25 @@ def train_keras_model(X_train, y_train):
     y_train_encoded = target_encoder.fit_transform(y_train) # change target to binary 0 and 1
     print("Saving the target encoder to {}".format(TARGET_ENCODER_FILENAME))
     joblib.dump(target_encoder, TARGET_ENCODER_FILENAME)
-
+    """
     model = keras.Sequential([
         keras.layers.InputLayer(input_shape=(X_train.shape[1],)),
         keras.layers.Dense(64, activation="relu"),
         keras.layers.Dense(32, activation="relu"),
         keras.layers.Dense(1, activation="sigmoid")
     ])
-
+    """
+    # smaller model
+    model = keras.Sequential([
+        keras.layers.InputLayer(input_shape=(X_train.shape[1],)),
+        keras.layers.Dense(16, activation="relu"),
+        keras.layers.Dense(1, activation="sigmoid")
+    ])
     model.compile(optimizer="adam",
                   loss="binary_crossentropy",
                   metrics=["accuracy"])
 
-    model.fit(X_train, y_train_encoded, epochs=10, batch_size=32, verbose=1)
+    model.fit(X_train, y_train_encoded, epochs=50, batch_size=32, verbose=1)
     print("Model training complete.")
     return model
 
